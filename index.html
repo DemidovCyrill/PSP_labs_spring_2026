@@ -2,89 +2,70 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Калькулятор</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор | Главная</title>
     <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
 </head>
 <body>
-
-    <div class="container">
-
-        <div class="calculator">
-
-            <div id="result" class="result">
-                0
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-icon">🧮</span>
+                <span class="logo-text">DemCalc</span>
             </div>
-
-            <div class="buttons">
-
-                <div class="button-row">
-                    <button id="btn_op_clear" class="my-btn secondary">AC</button>
-                    <button id="btn_op_del" class="my-btn secondary">Del</button>
-                    <button id="btn_op_sign" class="my-btn secondary">+/-</button>
-                    <button id="btn_op_div" class="my-btn primary">/</button>
-                    <button id="btn_op_fuck" class="my-btn secondary">!</button>
-                </div>
-
-                <div class="button-row">
-                    <button id="btn_digit_7" class="my-btn">7</button>
-                    <button id="btn_digit_8" class="my-btn">8</button>
-                    <button id="btn_digit_9" class="my-btn">9</button>
-                    <button id="btn_op_mult" class="my-btn primary">x</button>
-                    <button id="btn_op_percent" class="my-btn secondary">%</button>
-                </div>
-
-                <div class="button-row">
-                    <button id="btn_digit_4" class="my-btn">4</button>
-                    <button id="btn_digit_5" class="my-btn">5</button>
-                    <button id="btn_digit_6" class="my-btn">6</button>
-                    <button id="btn_op_minus" class="my-btn primary">-</button>
-                    <button id="btn_op_sqrt" class="my-btn secondary">√</button>
-                </div>
-
-                <div class="button-row">
-                    <button id="btn_digit_1" class="my-btn">1</button>
-                    <button id="btn_digit_2" class="my-btn">2</button>
-                    <button id="btn_digit_3" class="my-btn">3</button>
-                    <button id="btn_op_plus" class="my-btn primary">+</button>
-                    <button id="btn_op_deg" class="my-btn secondary">x²</button>
-                </div>
-
-                <div class="button-row">
-                    <button id="btn_digit_0" class="my-btn">0</button>
-                    <button id="btn_digit_dot" class="my-btn">.</button>
-                    <button id="btn_op_equal" class="my-btn primary execute">=</button>
-                    <button id="btn_op_pow10" class="my-btn secondary">10ⁿ</button>
-                </div>
-
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link active">Главная</a></li>
+                <li><a href="calculator.html" class="nav-link">Калькулятор</a></li>
+                <li><a href="help.html" class="nav-link">Инструкция</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="https://github.com/DemidovCyrill/PSP_labs_spring_2026" target="_blank" class="github-btn">
+                    <span>GitHub</span>
+                </a>
             </div>
         </div>
+    </nav>
 
-        <div class="signature">
-            ЛР выполнена <b>Кириллом Демидовым</b>
+    <main class="main-content">
+        <div class="hero-section">
+            <div class="hero-icon">🧮</div>
+            <h1 class="hero-title">DemCalc</h1>
+            <p class="hero-subtitle">Современный научный калькулятор с расширенными возможностями</p>
         </div>
 
-        <details>
-            <summary>Автор</summary>
-            <p>ФИО: Демидов Кирилл Андреевич</p>
-            <p>Группа: ИУ5-43б</p>
-        </details>
+        <div class="about-section">
+            <div class="about-card">
+                <h2>📌 О проекте</h2>
+                <p><strong>DemCalc</strong> — это современный веб-калькулятор, разработанный в рамках лабораторной работы по программированию сетевых приложений.</p>
+                <p>Проект демонстрирует навыки работы с <span class="highlight">HTML</span>, <span class="highlight">CSS</span> и <span class="highlight">JavaScript</span>, а также современные подходы к созданию пользовательских интерфейсов.</p>
+            </div>
 
-        <p class="lab-goal">
-            <strong>Цель работы:</strong> знакомство с инструментами построения пользовательских интерфейсов web-сайтов:
-            <span class="highlight">HTML</span>, <span class="highlight">CSS</span>.
-        </p>
+            <div class="about-card">
+                <h2>👤 О разработчике</h2>
+                <p><strong>Кирилл Демидов</strong></p>
+                <p>Студент, изучающий веб-разработку и создание интерактивных приложений.</p>
+                <div class="social-links">
+                    <a href="https://github.com/DemidovCyrill/PSP_labs_spring_2026" target="_blank" class="social-link">GitHub</a>
+                </div>
+            </div>
 
-        <a href="https://github.com/DemidovCyrill/PSP_labs_spring_2026" target="_blank" class="github-link">
-            <button class="my-btn">GitHub</button>
-        </a>
+            <div class="about-card">
+                <h2>⚡ Возможности</h2>
+                <ul class="features-list">
+                    <li>✓ Базовые арифметические операции (+, -, ×, ÷)</li>
+                    <li>✓ Научные функции (√, x², x!, ×10ⁿ)</li>
+                    <li>✓ Накопительное сложение/вычитание</li>
+                    <li>✓ Поддержка дробных чисел</li>
+                    <li>✓ Ввод с клавиатуры</li>
+                    <li>✓ Округление до 12 значащих цифр</li>
+                    <li>✓ Современный темный интерфейс</li>
+                </ul>
+            </div>
+        </div>
+    </main>
 
-        <label for="theme-select">Выберите тему:</label>
-        <select id="theme-select" name="theme">
-            <option value="light">Светлая</option>
-            <option value="dark">Тёмная</option>
-        </select>
-
-    </div>
+    <footer class="footer">
+        <p>© 2026 Кирилл Демидов | Лабораторная работа по программированию сетевых приложений</p>
+    </footer>
 </body>
 </html>
