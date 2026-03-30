@@ -1,10 +1,78 @@
 window.onload = function() {
+    // ===== ПЕРЕКЛЮЧЕНИЕ ТЕМЫ (РАБОТАЕТ НА ВСЕХ СТРАНИЦАХ) =====
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        const savedTheme = localStorage.getItem('calculatorTheme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+            themeToggle.textContent = '☀️';
+        } else if (savedTheme === 'light') {
+            document.body.classList.remove('dark-theme');
+            themeToggle.textContent = '🌙';
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.body.classList.add('dark-theme');
+            themeToggle.textContent = '☀️';
+        }
+
+        themeToggle.onclick = function() {
+            if (document.body.classList.contains('dark-theme')) {
+                document.body.classList.remove('dark-theme');
+                themeToggle.textContent = '🌙';
+                localStorage.setItem('calculatorTheme', 'light');
+            } else {
+                document.body.classList.add('dark-theme');
+                themeToggle.textContent = '☀️';
+                localStorage.setItem('calculatorTheme', 'dark');
+            }
+        };
+    }
+
+    // ===== КОД КАЛЬКУЛЯТОРА (РАБОТАЕТ ТОЛЬКО НА СТРАНИЦЕ С КАЛЬКУЛЯТОРОМ) =====
+    const outputElement = document.getElementById("result");
+    if (!outputElement) return;  // Если нет элемента result — выходим (это не страница калькулятора)
+
     let a = '';
     let b = '';
     let selectedOperation = null;
-
-    const outputElement = document.getElementById("result");
+    let historyList = [];
+    const historyContainer = document.getElementById('historyList');
+    const historyToggle = document.getElementById('historyToggle');
     const digitButtons = document.querySelectorAll('[id ^= "btn_digit_"]');
+
+    function formatDisplay(value) {
+        if (isNaN(value) || !isFinite(value)) return value.toString();
+        const num = typeof value === 'string' ? parseFloat(value) : value;
+        if (Math.abs(num) > 1e12 || (Math.abs(num) < 1e-12 && num !== 0)) {
+            return num.toExponential(7);
+        }
+        return parseFloat(num.toPrecision(12)).toString();
+    }
+
+    function addToHistory(expression, result) {
+        historyList.unshift({ expression, result, timestamp: new Date().toLocaleTimeString() });
+        if (historyList.length > 20) historyList.pop();
+        updateHistoryDisplay();
+    }
+
+    function updateHistoryDisplay() {
+        if (!historyContainer) return;
+        if (historyList.length === 0) {
+            historyContainer.innerHTML = '<div class="history-empty">Пока нет истории</div>';
+            return;
+        }
+        historyContainer.innerHTML = historyList.map(item =>
+            `<div class="history-item">${item.expression} = ${item.result}</div>`
+        ).join('');
+
+        const isCollapsed = historyContainer.classList.contains('collapsed');
+        if (isCollapsed && historyList.length > 0) {
+            const allItems = historyContainer.querySelectorAll('.history-item');
+            allItems.forEach((item, index) => {
+                if (index !== 0) item.style.display = 'none';
+                else item.style.display = 'block';
+            });
+        }
+    }
 
     function onDigitButtonClicked(digit) {
         if (selectedOperation === null) {
@@ -20,67 +88,48 @@ window.onload = function() {
         }
     }
 
-    function formatDisplay(value) {
-    if (isNaN(value) || !isFinite(value)) {
-        return value.toString();
-    }
-
-    const num = typeof value === 'string' ? parseFloat(value) : value;
-
-    if (Math.abs(num) > 1e12 || (Math.abs(num) < 1e-12 && num !== 0)) {
-        return num.toExponential(8);
-    }
-
-    return parseFloat(num.toPrecision(12)).toString();
-}
-
     digitButtons.forEach(button => {
-        button.onclick = function() {
-            const digitValue = button.innerHTML;
-            onDigitButtonClicked(digitValue);
-        };
+        button.onclick = () => onDigitButtonClicked(button.innerHTML);
     });
 
-    document.getElementById("btn_op_mult").onclick = function() {
+    document.getElementById("btn_op_mult").onclick = () => {
         if (a === '') return;
         selectedOperation = 'x';
     };
-
-    document.getElementById("btn_op_plus").onclick = function() {
+    document.getElementById("btn_op_plus").onclick = () => {
         if (a === '') return;
+        if (selectedOperation && b !== '') document.getElementById("btn_op_equal").onclick();
         selectedOperation = '+';
     };
-
-    document.getElementById("btn_op_minus").onclick = function() {
+    document.getElementById("btn_op_minus").onclick = () => {
         if (a === '') return;
+        if (selectedOperation && b !== '') document.getElementById("btn_op_equal").onclick();
         selectedOperation = '-';
     };
-
-    document.getElementById("btn_op_div").onclick = function() {
+    document.getElementById("btn_op_div").onclick = () => {
         if (a === '') return;
         selectedOperation = '/';
     };
-
-    document.getElementById("btn_op_pow10").onclick = function() {
+    document.getElementById("btn_op_pow10").onclick = () => {
         if (a === '') return;
         selectedOperation = '^';
     };
 
-    document.getElementById("btn_op_percent").onclick = function() {
+    document.getElementById("btn_op_percent").onclick = () => {
         if (selectedOperation === null) {
             if (a !== '') {
-                a = (a / 100).toString();
-                outputElement.innerHTML = a;
+                a = (parseFloat(a) / 100).toString();
+                outputElement.innerHTML = formatDisplay(a);
             }
         } else {
             if (b !== '') {
-                b = (b / 100).toString();
-                outputElement.innerHTML = b;
+                b = (parseFloat(b) / 100).toString();
+                outputElement.innerHTML = formatDisplay(b);
             }
         }
     };
 
-    document.getElementById("btn_op_del").onclick = function() {
+    document.getElementById("btn_op_del").onclick = () => {
         if (selectedOperation === null) {
             if (a.length > 0) {
                 a = a.slice(0, -1);
@@ -94,25 +143,15 @@ window.onload = function() {
         }
     };
 
-    document.getElementById("btn_op_sqrt").onclick = function() {
-        let number = '';
-
-        if (selectedOperation === null) {
-            number = a;
-        } else {
-            number = b;
-        }
-
+    document.getElementById("btn_op_sqrt").onclick = () => {
+        let number = selectedOperation === null ? a : b;
         if (number !== '') {
             const num = parseFloat(number);
-
             if (num < 0) {
                 outputElement.innerHTML = 'Ошибка';
                 return;
             }
-
             const result = Math.sqrt(num);
-
             if (selectedOperation === null) {
                 a = result.toString();
                 outputElement.innerHTML = formatDisplay(a);
@@ -120,22 +159,15 @@ window.onload = function() {
                 b = result.toString();
                 outputElement.innerHTML = formatDisplay(b);
             }
+            addToHistory(`√(${number})`, formatDisplay(result));
         }
     };
 
-    document.getElementById("btn_op_deg").onclick = function() {
-        let number = '';
-
-        if (selectedOperation === null) {
-            number = a;
-        } else {
-            number = b;
-        }
-
+    document.getElementById("btn_op_deg").onclick = () => {
+        let number = selectedOperation === null ? a : b;
         if (number !== '') {
             const num = parseFloat(number);
             const result = num * num;
-
             if (selectedOperation === null) {
                 a = result.toString();
                 outputElement.innerHTML = formatDisplay(a);
@@ -143,81 +175,70 @@ window.onload = function() {
                 b = result.toString();
                 outputElement.innerHTML = formatDisplay(b);
             }
+            addToHistory(`${number}²`, formatDisplay(result));
         }
     };
 
-    document.getElementById("btn_op_clear").onclick = function() {
+    document.getElementById("btn_op_clear").onclick = () => {
         a = '';
         b = '';
         selectedOperation = null;
-        expressionResult = '';
         outputElement.innerHTML = '0';
     };
 
-    document.getElementById("btn_op_sign").onclick = function() {
+    document.getElementById("btn_op_sign").onclick = () => {
         if (selectedOperation === null) {
             if (a !== '') {
-                a = (+a * -1).toString();
-                outputElement.innerHTML = a;
+                a = (parseFloat(a) * -1).toString();
+                outputElement.innerHTML = formatDisplay(a);
             }
         } else {
             if (b !== '') {
-                b = (+b * -1).toString();
-                outputElement.innerHTML = b;
+                b = (parseFloat(b) * -1).toString();
+                outputElement.innerHTML = formatDisplay(b);
             }
         }
     };
 
-    document.getElementById("btn_op_fuck").onclick = function() {
-        let number = '';
-
-        if (selectedOperation === null) {
-            number = a;
-        } else {
-            number = b;
-        }
-
+    document.getElementById("btn_op_fuck").onclick = () => {
+        let number = selectedOperation === null ? a : b;
         if (number !== '') {
-            const num = +number;
-
+            const num = parseFloat(number);
             if (num < 0 || !Number.isInteger(num)) {
                 outputElement.innerHTML = 'Ошибка';
                 return;
             }
-
             let result = 1;
-            for (let i = 2; i <= num; i++) {
-                result *= i;
-            }
-
+            for (let i = 2; i <= num; i++) result *= i;
             if (selectedOperation === null) {
                 a = result.toString();
-                outputElement.innerHTML = a;
+                outputElement.innerHTML = formatDisplay(a);
             } else {
                 b = result.toString();
-                outputElement.innerHTML = b;
+                outputElement.innerHTML = formatDisplay(b);
             }
+            addToHistory(`${number}!`, formatDisplay(result));
         }
     };
 
-    document.getElementById("btn_op_equal").onclick = function() {
-        if (a === '' || b === '' || selectedOperation === null) {
-            return;
-        }
-
+    document.getElementById("btn_op_equal").onclick = () => {
+        if (a === '' || b === '' || selectedOperation === null) return;
         const num1 = parseFloat(a);
         const num2 = parseFloat(b);
         let result;
-
+        let expressionStr = `${num1} `;
         switch(selectedOperation) {
             case 'x':
                 result = num1 * num2;
+                expressionStr += `× ${num2}`;
                 break;
             case '+':
                 result = num1 + num2;
+                expressionStr += `+ ${num2}`;
                 break;
             case '-':
                 result = num1 - num2;
+                expressionStr += `- ${num2}`;
                 break;
             case '/':
                 if (num2 === 0) {
@@ -225,93 +246,115 @@ window.onload = function() {
                     return;
                 }
                 result = num1 / num2;
+                expressionStr += `/ ${num2}`;
                 break;
             case '^':
                 result = num1 * Math.pow(10, num2);
+                expressionStr += `× 10^${num2}`;
                 break;
-            default:
-                return;
+            default: return;
         }
-
         a = result.toString();
         b = '';
         selectedOperation = null;
         outputElement.innerHTML = formatDisplay(a);
+        addToHistory(expressionStr, formatDisplay(result));
     };
 
-
-    document.addEventListener('keydown', function(event) {
+    document.addEventListener('keydown', (event) => {
         const key = event.key;
-
         if (key >= '0' && key <= '9') {
             event.preventDefault();
             onDigitButtonClicked(key);
-        }
-
-        else if (key === '.') {
+        } else if (key === '.') {
             event.preventDefault();
             onDigitButtonClicked('.');
-        }
-
-        else if (key === '+') {
+        } else if (key === '+') {
             event.preventDefault();
             document.getElementById("btn_op_plus").onclick();
-        }
-        else if (key === '-') {
+        } else if (key === '-') {
             event.preventDefault();
             document.getElementById("btn_op_minus").onclick();
-        }
-        else if (key === '*') {
+        } else if (key === '*') {
             event.preventDefault();
             document.getElementById("btn_op_mult").onclick();
-        }
-        else if (key === '/') {
+        } else if (key === '/') {
             event.preventDefault();
             document.getElementById("btn_op_div").onclick();
-        }
-
-        else if (key === 'Enter' || key === '=') {
+        } else if (key === 'Enter' || key === '=') {
             event.preventDefault();
             document.getElementById("btn_op_equal").onclick();
-        }
-
-        else if (key === 'Escape' || key === 'c' || key === 'C') {
+        } else if (key === 'Escape' || key === 'c' || key === 'C') {
             event.preventDefault();
             document.getElementById("btn_op_clear").onclick();
-        }
-
-        else if (key === 'Backspace') {
+        } else if (key === 'Backspace') {
             event.preventDefault();
-            const backspaceBtn = document.getElementById("btn_op_backspace");
-            if (backspaceBtn) {
-                backspaceBtn.onclick();
-            }
-        }
-
-        else if (key === 'r' || key === 'R') {
+            document.getElementById("btn_op_del").onclick();
+        } else if (key === 'r' || key === 'R') {
             event.preventDefault();
-            const sqrtBtn = document.getElementById("btn_op_sqrt");
-            if (sqrtBtn) {
-                sqrtBtn.onclick();
-            }
-        }
-
-        else if (key === 's' || key === 'S') {
+            document.getElementById("btn_op_sqrt").onclick();
+        } else if (key === 's' || key === 'S') {
             event.preventDefault();
-            const squareBtn = document.getElementById("btn_op_square");
-            if (squareBtn) {
-                squareBtn.onclick();
-            }
-        }
-
-        else if (key === '!') {
+            document.getElementById("btn_op_deg").onclick();
+        } else if (key === '!') {
             event.preventDefault();
-            const factBtn = document.getElementById("btn_op_factorial");
-            if (factBtn) {
-                factBtn.onclick();
-            }
+            document.getElementById("btn_op_fuck").onclick();
+        } else if (key === 'e' || key === 'E') {
+            event.preventDefault();
+            document.getElementById("btn_op_pow10").onclick();
         }
-
-        console.log("Нажата клавиша:", key);
     });
+
+    const colorOptions = document.querySelectorAll('.color-option');
+    const resetColorBtn = document.getElementById('resetColorBtn');
+    function applyButtonColor(color) {
+        document.querySelectorAll('.my-btn.primary').forEach(btn => {
+            btn.style.backgroundColor = color;
+        });
+        localStorage.setItem('buttonColor', color);
+    }
+    if (colorOptions.length) {
+        const savedColor = localStorage.getItem('buttonColor');
+        if (savedColor) applyButtonColor(savedColor);
+        colorOptions.forEach(option => {
+            option.onclick = () => applyButtonColor(option.getAttribute('data-color'));
+        });
+        if (resetColorBtn) {
+            resetColorBtn.onclick = () => {
+                document.querySelectorAll('.my-btn.primary').forEach(btn => {
+                    btn.style.backgroundColor = '';
+                });
+                localStorage.removeItem('buttonColor');
+            };
+        }
+    }
+
+    if (historyToggle) {
+        let collapsed = true;
+        const historyListEl = document.getElementById('historyList');
+        const toggleBtn = document.querySelector('.history-toggle-btn');
+
+        historyListEl.classList.add('collapsed');
+        toggleBtn.textContent = '▼';
+
+        historyToggle.onclick = () => {
+            collapsed = !collapsed;
+            if (collapsed) {
+                historyListEl.classList.add('collapsed');
+                toggleBtn.textContent = '▼';
+                const allItems = historyListEl.querySelectorAll('.history-item');
+                allItems.forEach((item, index) => {
+                    if (index !== 0) item.style.display = 'none';
+                    else item.style.display = 'block';
+                });
+            } else {
+                historyListEl.classList.remove('collapsed');
+                toggleBtn.textContent = '▲';
+                const allItems = historyListEl.querySelectorAll('.history-item');
+                allItems.forEach(item => {
+                    item.style.display = 'block';
+                });
+            }
+        };
+    }
 };

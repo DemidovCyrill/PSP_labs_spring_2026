@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Инструкция | DemCalc</title>
+    <title>DemCalc | Инструкция</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -19,16 +19,14 @@
                 <li><a href="help.html" class="nav-link active">Инструкция</a></li>
             </ul>
             <div class="nav-actions">
-                <a href="https://github.com/DemidovCyrill/PSP_labs_spring_2026" target="_blank" class="github-btn">
-                    <span>GitHub</span>
-                </a>
+                <button id="themeToggle" class="theme-toggle-btn">🌙</button>
+                <a href="https://github.com/DemidovCyrill/PSP_labs_spring_2026" target="_blank" class="github-btn">GitHub</a>
             </div>
         </div>
     </nav>
 
     <main class="main-content help-page">
         <h1 class="page-title">📖 Инструкция по использованию</h1>
-
         <div class="help-grid">
             <div class="help-card">
                 <h2>🔢 Базовые операции</h2>
@@ -42,54 +40,37 @@
                     <tr><td><strong>+/-</strong></td><td>Сменить знак числа</td></tr>
                 </table>
             </div>
-
             <div class="help-card">
                 <h2>🔬 Научные функции</h2>
                 <table class="help-table">
                     <tr><td><strong>√</strong></td><td>Квадратный корень</td></tr>
                     <tr><td><strong>x²</strong></td><td>Возведение в квадрат</td></tr>
-                    <tr><td><strong>x!</strong></td><td>Факториал (только целые числа)</td></tr>
-                    <tr><td><strong>10ⁿ</strong></td><td>Умножение на 10 в степени</td></tr>
+                    <tr><td><strong>x!</strong></td><td>Факториал</td></tr>
+                    <tr><td><strong>10ⁿ</strong></td><td>Умножение на 10ⁿ</td></tr>
                 </table>
             </div>
-
             <div class="help-card">
                 <h2>⌨️ Горячие клавиши</h2>
                 <table class="help-table">
                     <tr><td><strong>0-9, .</strong></td><td>Ввод цифр и точки</td></tr>
-                    <tr><td><strong>+ - * /</strong></td><td>Арифметические операции</td></tr>
-                    <tr><td><strong>Enter или =</strong></td><td>Вычислить результат</td></tr>
-                    <tr><td><strong>Backspace</strong></td><td>Удалить последний символ</td></tr>
-                    <tr><td><strong>Esc или C</strong></td><td>Очистить всё</td></tr>
+                    <tr><td><strong>+ - * /</strong></td><td>Операции</td></tr>
+                    <tr><td><strong>Enter / =</strong></td><td>Вычислить</td></tr>
+                    <tr><td><strong>Backspace</strong></td><td>Удалить символ</td></tr>
+                    <tr><td><strong>Esc / C</strong></td><td>Очистить всё</td></tr>
                     <tr><td><strong>R</strong></td><td>Квадратный корень</td></tr>
                     <tr><td><strong>S</strong></td><td>Возведение в квадрат</td></tr>
                     <tr><td><strong>!</strong></td><td>Факториал</td></tr>
-                    <tr><td><strong>E</strong></td><td>Умножение на 10ⁿ</td></tr>
+                    <tr><td><strong>E</strong></td><td>×10ⁿ</td></tr>
                 </table>
             </div>
-<!--
-            <div class="help-card">
-                <h2>📝 Примеры вычислений</h2>
-                <table class="help-table">
-                    <tr><td><strong>5 + 3</strong></td><td>= 8</td></tr>
-                    <tr><td><strong>10 × 5</strong></td><td>= 50</td></tr>
-                    <tr><td><strong>√16</strong></td><td>= 4</td></tr>
-                    <tr><td><strong>5!</strong></td><td>= 120</td></tr>
-                    <tr><td><strong>5 × 10⁴</strong></td><td>= 50000</td></tr>
-                    <tr><td><strong>0.1 + 0.2</strong></td><td>= 0.3</td></tr>
-                    <tr><td><strong>25 × 10⁻²</strong></td><td>= 0.25</td></tr>
-                </table>
-            </div>
--->
         </div>
-
         <div class="tech-card">
-            <h2>⚙️ Технические возможности</h2>
+            <h2>⚙️ Технические особенности</h2>
             <ul class="tech-list">
-                <li><strong>Округление:</strong> Результаты округляются до 12 значащих цифр для удобочитаемости</li>
-                <li><strong>Дробные числа:</strong> Полная поддержка десятичных дробей</li>
-                <li><strong>Научная нотация:</strong> Кнопка 10ⁿ позволяет умножать число на 10 в любой степени</li>
-                <li><strong>Клавиатурный ввод:</strong> Полная поддержка горячих клавиш для быстрой работы</li>
+                <li><strong>Округление:</strong> До 12 значащих цифр для идеальной читаемости.</li>
+                <li><strong>Точность:</strong> Полная поддержка десятичных дробей.</li>
+                <li><strong>История:</strong> Все действия сохраняются и доступны в любой момент.</li>
+                <li><strong>Адаптивность:</strong> Идеально выглядит на любых устройствах.</li>
             </ul>
         </div>
     </main>
@@ -97,5 +78,6 @@
     <footer class="footer">
         <p>© 2026 Кирилл Демидов | Лабораторная работа по программированию сетевых приложений</p>
     </footer>
+    <script src="script.js"></script>
 </body>
 </html>
