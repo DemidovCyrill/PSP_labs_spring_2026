@@ -4,13 +4,17 @@ export class BackButtonComponent {
     }
 
     getHTML() {
-        return `<button id="back-button" class="btn btn-secondary mb-3" type="button">← На главную</button>`;
+        return `<div class="dino-header"><button class="back-btn" id="back-button">← Вернуться на главную</button></div>`;
     }
 
     addListeners(listener) {
-        document
-            .getElementById("back-button")
-            .addEventListener("click", listener);
+        const btn = document.getElementById("back-button");
+        if (btn) {
+            // Удаляем старый обработчик
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+            newBtn.addEventListener("click", listener);
+        }
     }
 
     render(listener) {

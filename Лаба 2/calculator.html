@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DemCalc | Калькулятор</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-icon">🧮</span>
+                <span class="logo-text">DemCalc</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Главная</a></li>
+                <li><a href="calculator.html" class="nav-link active">Калькулятор</a></li>
+                <li><a href="help.html" class="nav-link">Инструкция</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="themeToggle" class="theme-toggle-btn">🌙</button>
+                <a href="https://github.com/DemidovCyrill/PSP_labs_spring_2026" target="_blank" class="github-btn">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content calculator-page">
+        <div class="calculator-layout">
+            <div class="calculator-container">
+                <div class="calculator-wrapper">
+                    <div id="result" class="result">0</div>
+                    <div class="buttons">
+                        <div class="button-row">
+                            <button id="btn_op_clear" class="my-btn secondary">C</button>
+                            <button id="btn_op_del" class="my-btn secondary">⌫</button>
+                            <button id="btn_op_sign" class="my-btn secondary">+/-</button>
+                            <button id="btn_op_div" class="my-btn primary">/</button>
+                            <button id="btn_op_fuck" class="my-btn secondary">x!</button>
+                        </div>
+                        <div class="button-row">
+                            <button id="btn_digit_7" class="my-btn">7</button>
+                            <button id="btn_digit_8" class="my-btn">8</button>
+                            <button id="btn_digit_9" class="my-btn">9</button>
+                            <button id="btn_op_mult" class="my-btn primary">×</button>
+                            <button id="btn_op_percent" class="my-btn secondary">%</button>
+                        </div>
+                        <div class="button-row">
+                            <button id="btn_digit_4" class="my-btn">4</button>
+                            <button id="btn_digit_5" class="my-btn">5</button>
+                            <button id="btn_digit_6" class="my-btn">6</button>
+                            <button id="btn_op_minus" class="my-btn primary">-</button>
+                            <button id="btn_op_sqrt" class="my-btn secondary">√</button>
+                        </div>
+                        <div class="button-row">
+                            <button id="btn_digit_1" class="my-btn">1</button>
+                            <button id="btn_digit_2" class="my-btn">2</button>
+                            <button id="btn_digit_3" class="my-btn">3</button>
+                            <button id="btn_op_plus" class="my-btn primary">+</button>
+                            <button id="btn_op_deg" class="my-btn secondary">x²</button>
+                        </div>
+                        <div class="button-row">
+                            <button id="btn_digit_0" class="my-btn">0</button>
+                            <button id="btn_digit_dot" class="my-btn">.</button>
+                            <button id="btn_op_equal" class="my-btn primary execute">=</button>
+                            <button id="btn_op_pow10" class="my-btn secondary">10ⁿ</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="calculator-footer">
+                    <div class="color-picker-panel">
+                        <span class="color-picker-label">Акцент:</span>
+                        <button class="color-option" data-color="#ff5500" style="background: #ff5500;"></button>
+                        <button class="color-option" data-color="#47b88c" style="background: #47b88c;"></button>
+                        <button class="color-option" data-color="#6b8ec9" style="background: #6b8ec9;"></button>
+                        <button class="color-option" data-color="#9b59b6" style="background: #9b59b6;"></button>
+                        <button class="color-option" data-color="#e67e22" style="background: #e67e22;"></button>
+                        <button id="resetColorBtn" class="reset-color-btn">Сброс</button>
+                    </div>
+                    <p class="calc-shortcut">⌨️ Горячие клавиши: Enter / Backspace / Esc / R / S / ! / E</p>
+                </div>
+            </div>
+
+            <div class="history-container">
+                <div class="history-header" id="historyToggle">
+                    <span>История вычислений</span>
+                    <button class="history-toggle-btn">▼</button>
+                </div>
+                <div class="history-list" id="historyList">
+                    <div class="history-empty">Пока нет истории</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Кирилл Демидов | Лабораторная работа по программированию сетевых приложений</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

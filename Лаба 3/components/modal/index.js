@@ -1,45 +1,59 @@
 export class ModalComponent {
     constructor() {
-        // Проверяем, существует ли уже модальное окно на странице, чтобы не создавать дубликаты
         if (!document.getElementById('global-modal')) {
             this.createModal();
         }
         this.modalElement = document.getElementById('global-modal');
+        this.modalOverlay = document.getElementById('modalOverlay');
     }
 
     createModal() {
         const modalHTML = `
-            <div class="modal fade" id="global-modal" tabindex="-1" aria-labelledby="global-modal-label" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="global-modal-label">🦖 Интересный факт</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body" id="modal-body-content">
-                            Загрузка...
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                        </div>
+            <div class="modal-overlay" id="modalOverlay">
+                <div class="modal-container" id="global-modal">
+                    <div class="modal-header">
+                        <h5 class="modal-title">🦕 Интересный факт</h5>
+                        <button class="modal-close" id="modalCloseBtn">&times;</button>
+                    </div>
+                    <div class="modal-body" id="modalBodyContent">
+                        Загрузка...
                     </div>
                 </div>
             </div>
         `;
         document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+        const closeBtn = document.getElementById('modalCloseBtn');
+        const overlay = document.getElementById('modalOverlay');
+        if (closeBtn) {
+            closeBtn.onclick = () => this.hide();
+        }
+        if (overlay) {
+            overlay.onclick = (e) => {
+                if (e.target === overlay) this.hide();
+            };
+        }
     }
 
     setContent(content) {
-        const body = document.getElementById('modal-body-content');
+        const body = document.getElementById('modalBodyContent');
         if (body) {
-            body.innerHTML = content;
+            body.innerHTML = `<p class="lead">${content}</p>`;
         }
     }
 
     show(content) {
         this.setContent(content);
-        // Инициализация модального окна через Bootstrap JS API
-        const modal = new bootstrap.Modal(this.modalElement);
-        modal.show();
+        const overlay = document.getElementById('modalOverlay');
+        if (overlay) {
+            overlay.classList.add('active');
+        }
+    }
+
+    hide() {
+        const overlay = document.getElementById('modalOverlay');
+        if (overlay) {
+            overlay.classList.remove('active');
+        }
     }
 }

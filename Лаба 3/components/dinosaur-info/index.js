@@ -5,30 +5,44 @@ export class DinosaurInfoComponent {
 
     getHTML(data) {
         return `
-            <div class="card mb-4">
-                <div class="row g-0">
-                    <div class="col-md-5">
-                        <img src="${data.src}" class="img-fluid rounded-start" alt="${data.title}" style="height: 100%; object-fit: cover;">
-                    </div>
-                    <div class="col-md-7">
-                        <div class="card-body">
-                            <h3 class="card-title">${data.title}</h3>
-                            <p class="card-text"><strong>Эпоха:</strong> ${data.period}</p>
-                            <p class="card-text"><strong>Рацион:</strong> ${data.diet}</p>
-                            <p class="card-text"><strong>Длина:</strong> ${data.length}</p>
-                            <p class="card-text"><strong>Вес:</strong> ${data.weight}</p>
-                            <p class="card-text"><strong>Описание:</strong> ${data.description}</p>
-                            <button id="fun-fact-btn" class="btn btn-warning mt-2" data-bs-toggle="modal" data-bs-target="#dinosaurModal">Интересный факт!</button>
+            <div class="dino-detail-card">
+                <img src="${data.src}" class="dino-detail-image" alt="${data.title}" onerror="this.src='https://via.placeholder.com/800x300?text=${data.title}'">
+                <div class="dino-detail-content">
+                    <h1 class="dino-detail-title">${data.title}</h1>
+                    <div class="dino-detail-period">${data.period}</div>
+
+                    <div class="dino-detail-info">
+                        <div class="info-item">
+                            <div class="info-label">Рацион</div>
+                            <div class="info-value">${data.diet}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Длина</div>
+                            <div class="info-value">${data.length}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Вес</div>
+                            <div class="info-value">${data.weight}</div>
                         </div>
                     </div>
+
+                    <p class="dino-detail-description">${data.description}</p>
+
+                    <button class="fun-fact-btn" id="funFactBtn">Интересный факт</button>
                 </div>
             </div>
         `;
     }
 
-    render(data) {
+    addListeners(data, callback) {
+        document.getElementById('funFactBtn').addEventListener('click', () => {
+            callback(data.funFact);
+        });
+    }
+
+    render(data, callback) {
         const html = this.getHTML(data);
         this.parent.insertAdjacentHTML('beforeend', html);
-        return document.getElementById('fun-fact-btn');
+        this.addListeners(data, callback);
     }
 }

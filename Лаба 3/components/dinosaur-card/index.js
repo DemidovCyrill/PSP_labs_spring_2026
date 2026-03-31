@@ -5,13 +5,13 @@ export class DinosaurCardComponent {
 
     getHTML(data) {
         return `
-            <div class="card h-100 shadow-sm">
-                <img src="${data.src}" class="card-img-top" alt="${data.title}">
-                <div class="card-body">
-                    <h5 class="card-title">${data.title}</h5>
-                    <p class="card-text text-muted">${data.period}</p>
-                    <p class="card-text">${data.short_description}</p>
-                    <button class="btn btn-outline-primary w-100" id="click-card-${data.id}" data-id="${data.id}">Узнать больше</button>
+            <div class="dino-card" id="dino-card-${data.id}" data-id="${data.id}">
+                <img src="${data.src}" class="dino-card-image" alt="${data.title}" onerror="this.src='https://via.placeholder.com/300x200?text=${data.title}'">
+                <div class="dino-card-content">
+                    <h3 class="dino-card-title">${data.title}</h3>
+                    <div class="dino-card-period">${data.period}</div>
+                    <p class="dino-card-description">${data.short_description}</p>
+                    <span class="dino-card-diet">${data.diet}</span>
                 </div>
             </div>
         `;
@@ -19,7 +19,7 @@ export class DinosaurCardComponent {
 
     addListeners(data, listener) {
         document
-            .getElementById(`click-card-${data.id}`)
+            .getElementById(`dino-card-${data.id}`)
             .addEventListener("click", () => listener(data.id));
     }
 

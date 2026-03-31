@@ -15,7 +15,27 @@ export class DinosaurPage {
     }
 
     getHTML() {
-        return `<div id="dinosaur-page" class="container py-4"></div>`;
+        return `
+            <div id="dinosaur-page">
+                <nav class="navbar">
+                    <div class="nav-logo">
+                        <span class="logo-text">Палео<span class="logo-accent">Dem</span></span>
+                    </div>
+                    <div class="nav-actions">
+                        <button id="globalThemeToggle" class="theme-toggle-btn">🌙</button>
+                        <a href="https://github.com/DemidovCyrill/PSP_labs_spring_2026" target="_blank" class="github-btn">GitHub</a>
+                    </div>
+                </nav>
+
+                <div class="main-container">
+                    <div class="dinosaur-page-container"></div>
+                </div>
+
+                <footer class="footer">
+                    <p>© 2026 Кирилл Демидов | Лабораторная работа по программированию сетевых приложений</p>
+                </footer>
+            </div>
+        `;
     }
 
     getData() {
@@ -23,17 +43,18 @@ export class DinosaurPage {
         return allDinosaurs.find(dino => dino.id === this.id);
     }
 
-    clickBack() {
-        const mainPage = new MainPage(this.parent);
-        mainPage.render();
-    }
-
-    showFunFact() {
-        const data = this.getData();
-        if (data && data.funFact) {
-            this.modal.show(`<p class="lead">${data.funFact}</p>`);
-        } else {
-            this.modal.show(`<p>Интересных фактов об этом динозавре пока не найдено.</p>`);
+    initTheme() {
+        const savedTheme = localStorage.getItem('paleoTheme');
+        const themeToggle = document.getElementById('globalThemeToggle');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+            if (themeToggle) themeToggle.textContent = '☀️';
+        } else if (savedTheme === 'light') {
+            document.body.classList.remove('dark-theme');
+            if (themeToggle) themeToggle.textContent = '🌙';
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.body.classList.add('dark-theme');
+            if (themeToggle) themeToggle.textContent = '☀️';
         }
     }
 
@@ -42,21 +63,43 @@ export class DinosaurPage {
         const html = this.getHTML();
         this.parent.insertAdjacentHTML('beforeend', html);
 
-        const backButton = new BackButtonComponent(this.pageRoot);
-        backButton.render(this.clickBack.bind(this));
+        this.initTheme();
+
+        const themeToggle = document.getElementById('globalThemeToggle');
+        if (themeToggle) {
+            const newToggle = themeToggle.cloneNode(true);
+            themeToggle.parentNode.replaceChild(newToggle, themeToggle);
+
+            newToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (document.body.classList.contains('dark-theme')) {
+                    document.body.classList.remove('dark-theme');
+                    newToggle.textContent = '🌙';
+                    localStorage.setItem('paleoTheme', 'light');
+                } else {
+                    document.body.classList.add('dark-theme');
+                    newToggle.textContent = '☀️';
+                    localStorage.setItem('paleoTheme', 'dark');
+                }
+            });
+        }
+
+        const container = document.querySelector('.dinosaur-page-container');
+
+        const backButton = new BackButtonComponent(container);
+        backButton.render(() => {
+            const mainPage = new MainPage(this.parent);
+            mainPage.render();
+        });
 
         const data = this.getData();
         if (data) {
-            const dinosaurInfo = new DinosaurInfoComponent(this.pageRoot);
-            const factButton = dinosaurInfo.render(data);
-
-            if (factButton) {
-                factButton.addEventListener('click', () => {
-                    this.showFunFact();
-                });
-            }
+            const dinosaurInfo = new DinosaurInfoComponent(container);
+            dinosaurInfo.render(data, (fact) => {
+                this.modal.show(fact);
+            });
         } else {
-            this.pageRoot.insertAdjacentHTML('beforeend', '<div class="alert alert-danger">Динозавр не найден!</div>');
+            container.insertAdjacentHTML('beforeend', '<div class="alert alert-danger">Динозавр не найден!</div>');
         }
     }
 }

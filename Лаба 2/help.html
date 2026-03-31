@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DemCalc | Инструкция</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-icon">🧮</span>
+                <span class="logo-text">DemCalc</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Главная</a></li>
+                <li><a href="calculator.html" class="nav-link">Калькулятор</a></li>
+                <li><a href="help.html" class="nav-link active">Инструкция</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="themeToggle" class="theme-toggle-btn">🌙</button>
+                <a href="https://github.com/DemidovCyrill/PSP_labs_spring_2026" target="_blank" class="github-btn">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content help-page">
+        <h1 class="page-title">📖 Инструкция по использованию</h1>
+        <div class="help-grid">
+            <div class="help-card">
+                <h2>🔢 Базовые операции</h2>
+                <table class="help-table">
+                    <tr><td><strong>+</strong></td><td>Сложение</td></tr>
+                    <tr><td><strong>-</strong></td><td>Вычитание</td></tr>
+                    <tr><td><strong>×</strong></td><td>Умножение</td></tr>
+                    <tr><td><strong>/</strong></td><td>Деление</td></tr>
+                    <tr><td><strong>C</strong></td><td>Очистить всё</td></tr>
+                    <tr><td><strong>⌫</strong></td><td>Удалить последний символ</td></tr>
+                    <tr><td><strong>+/-</strong></td><td>Сменить знак числа</td></tr>
+                </table>
+            </div>
+            <div class="help-card">
+                <h2>🔬 Научные функции</h2>
+                <table class="help-table">
+                    <tr><td><strong>√</strong></td><td>Квадратный корень</td></tr>
+                    <tr><td><strong>x²</strong></td><td>Возведение в квадрат</td></tr>
+                    <tr><td><strong>x!</strong></td><td>Факториал</td></tr>
+                    <tr><td><strong>10ⁿ</strong></td><td>Умножение на 10ⁿ</td></tr>
+                </table>
+            </div>
+            <div class="help-card">
+                <h2>⌨️ Горячие клавиши</h2>
+                <table class="help-table">
+                    <tr><td><strong>0-9, .</strong></td><td>Ввод цифр и точки</td></tr>
+                    <tr><td><strong>+ - * /</strong></td><td>Операции</td></tr>
+                    <tr><td><strong>Enter / =</strong></td><td>Вычислить</td></tr>
+                    <tr><td><strong>Backspace</strong></td><td>Удалить символ</td></tr>
+                    <tr><td><strong>Esc / C</strong></td><td>Очистить всё</td></tr>
+                    <tr><td><strong>R</strong></td><td>Квадратный корень</td></tr>
+                    <tr><td><strong>S</strong></td><td>Возведение в квадрат</td></tr>
+                    <tr><td><strong>!</strong></td><td>Факториал</td></tr>
+                    <tr><td><strong>E</strong></td><td>×10ⁿ</td></tr>
+                </table>
+            </div>
+        </div>
+        <div class="tech-card">
+            <h2>⚙️ Технические особенности</h2>
+            <ul class="tech-list">
+                <li><strong>Округление:</strong> До 12 значащих цифр для идеальной читаемости.</li>
+                <li><strong>Точность:</strong> Полная поддержка десятичных дробей.</li>
+                <li><strong>История:</strong> Все действия сохраняются и доступны в любой момент.</li>
+                <li><strong>Адаптивность:</strong> Идеально выглядит на любых устройствах.</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Кирилл Демидов | Лабораторная работа по программированию сетевых приложений</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
