@@ -4,9 +4,12 @@ export class DinosaurCardComponent {
     }
 
     getHTML(data) {
+        // Берём первое изображение из массива images
+        const imageUrl = data.images && data.images.length > 0 ? data.images[0] : 'https://via.placeholder.com/300x200?text=No+Image';
+
         return `
             <div class="dino-card" id="dino-card-${data.id}" data-id="${data.id}">
-                <img src="${data.src}" class="dino-card-image" alt="${data.title}" onerror="this.src='https://via.placeholder.com/300x200?text=${data.title}'">
+                <img src="${imageUrl}" class="dino-card-image" alt="${data.title}" onerror="this.src='https://via.placeholder.com/300x200?text=${data.title}'">
                 <div class="dino-card-content">
                     <h3 class="dino-card-title">${data.title}</h3>
                     <div class="dino-card-period">${data.period}</div>
