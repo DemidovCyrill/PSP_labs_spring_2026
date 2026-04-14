@@ -1,5 +1,4 @@
 window.onload = function() {
-    // ===== ПЕРЕКЛЮЧЕНИЕ ТЕМЫ (РАБОТАЕТ НА ВСЕХ СТРАНИЦАХ) =====
     const themeToggle = document.getElementById('themeToggle');
     if (themeToggle) {
         const savedTheme = localStorage.getItem('calculatorTheme');
@@ -27,14 +26,15 @@ window.onload = function() {
         };
     }
 
-    // ===== КОД КАЛЬКУЛЯТОРА (РАБОТАЕТ ТОЛЬКО НА СТРАНИЦЕ С КАЛЬКУЛЯТОРОМ) =====
     const outputElement = document.getElementById("result");
-    if (!outputElement) return;  // Если нет элемента result — выходим (это не страница калькулятора)
+    if (!outputElement) return; // Выход, если это не страница калькулятора
 
-    let a = '';
-    let b = '';
-    let selectedOperation = null;
+    let currentExpression = ''; // Строка, которая отображается на экране (например, "4+4+6")
+    let currentResult = null;   // Результат последнего вычисления (для продолжений)
+    let lastOperator = null;     // Последний нажатый оператор
+    let waitingForOperand = false; // Ожидание ввода второго операнда после оператора
     let historyList = [];
+
     const historyContainer = document.getElementById('historyList');
     const historyToggle = document.getElementById('historyToggle');
     const digitButtons = document.querySelectorAll('[id ^= "btn_digit_"]');
@@ -48,8 +48,17 @@ window.onload = function() {
         return parseFloat(num.toPrecision(12)).toString();
     }
 
+    function updateDisplay() {
+        if (currentExpression === '') {
+            outputElement.innerHTML = '0';
+        } else {
+            outputElement.innerHTML = currentExpression;
+        }
+    }
+
     function addToHistory(expression, result) {
-        historyList.unshift({ expression, result, timestamp: new Date().toLocaleTimeString() });
+        const formattedResult = formatDisplay(result);
+        historyList.unshift({ expression, result: formattedResult, timestamp: new Date().toLocaleTimeString() });
         if (historyList.length > 20) historyList.pop();
         updateHistoryDisplay();
     }
@@ -74,193 +83,188 @@ window.onload = function() {
         }
     }
 
-    function onDigitButtonClicked(digit) {
-        if (selectedOperation === null) {
-            if (digit !== '.' || (digit === '.' && !a.includes('.'))) {
-                a += digit;
-                outputElement.innerHTML = formatDisplay(a);
+    function calculateExpression(expr) {
+        // Заменяем '×' на '*' для вычислений
+        let calculationExpr = expr.replace(/×/g, '*');
+        try {
+            if (/[^0-9+\-*/^().%!√]/.test(calculationExpr)) {
+                return null;
             }
-        } else {
-            if (digit !== '.' || (digit === '.' && !b.includes('.'))) {
-                b += digit;
-                outputElement.innerHTML = formatDisplay(b);
+            const result = Function('"use strict";return (' + calculationExpr + ')')();
+            if (isNaN(result) || !isFinite(result)) {
+                return null;
             }
+            return result;
+        } catch (e) {
+            console.error("Ошибка вычисления:", e);
+            return null;
         }
     }
 
+    function onDigitButtonClicked(digit) {
+        if (waitingForOperand) {
+            if (digit === '.' && currentExpression.endsWith('.')) return;
+            currentExpression += digit;
+            waitingForOperand = false;
+        } else {
+            if (digit === '.' && currentExpression.split(/[\+\-\*\/×]/).pop().includes('.')) return;
+            currentExpression += digit;
+        }
+        updateDisplay();
+    }
+
+    function handleOperator(op) {
+        if (currentExpression === '') {
+            if (op === '-') {
+                currentExpression = '-';
+                waitingForOperand = false;
+                updateDisplay();
+            }
+            return;
+        }
+
+        const lastChar = currentExpression.slice(-1);
+        if (['+', '-', '×', '/'].includes(lastChar)) {
+            currentExpression = currentExpression.slice(0, -1) + op;
+            updateDisplay();
+            return;
+        }
+
+        currentExpression += op;
+        waitingForOperand = true;
+        updateDisplay();
+    }
+
+    function calculateResult() {
+        if (currentExpression === '' || waitingForOperand) return;
+
+        const exprToCalculate = currentExpression;
+        const result = calculateExpression(exprToCalculate);
+
+        if (result === null) {
+            outputElement.innerHTML = 'Ошибка';
+            currentExpression = '';
+            waitingForOperand = false;
+            return;
+        }
+
+        const formattedResult = formatDisplay(result);
+        addToHistory(exprToCalculate, formattedResult);
+
+        currentExpression = formattedResult;
+        waitingForOperand = true;
+        updateDisplay();
+    }
+
+    function applyUnaryOperation(operation, symbol) {
+        if (currentExpression === '') return;
+
+        const match = currentExpression.match(/[\d\.]+(?!.*[\d\.])/);
+        if (!match) return;
+
+        const lastNumber = match[0];
+        const lastNumberIndex = currentExpression.lastIndexOf(lastNumber);
+        let num = parseFloat(lastNumber);
+        let result;
+        let newNumberStr;
+
+        switch(operation) {
+            case 'sqrt':
+                if (num < 0) {
+                    outputElement.innerHTML = 'Ошибка';
+                    return;
+                }
+                result = Math.sqrt(num);
+                newNumberStr = formatDisplay(result);
+                break;
+            case 'square':
+                result = num * num;
+                newNumberStr = formatDisplay(result);
+                break;
+            case 'factorial':
+                if (num < 0 || !Number.isInteger(num)) {
+                    outputElement.innerHTML = 'Ошибка';
+                    return;
+                }
+                let fact = 1;
+                for (let i = 2; i <= num; i++) fact *= i;
+                result = fact;
+                newNumberStr = formatDisplay(result);
+                break;
+            case 'percent':
+                result = num / 100;
+                newNumberStr = formatDisplay(result);
+                break;
+            default:
+                return;
+        }
+
+        const before = currentExpression.substring(0, lastNumberIndex);
+        const after = currentExpression.substring(lastNumberIndex + lastNumber.length);
+        currentExpression = before + newNumberStr + after;
+        waitingForOperand = false;
+        updateDisplay();
+    }
+
+    function clearAll() {
+        currentExpression = '';
+        waitingForOperand = false;
+        updateDisplay();
+    }
+
+    function deleteLastChar() {
+        if (currentExpression.length > 0) {
+            currentExpression = currentExpression.slice(0, -1);
+            updateDisplay();
+        }
+    }
+
+    // --- Смена знака у последнего числа ---
+    function toggleSign() {
+        if (currentExpression === '') return;
+
+        // Находим последнее число в выражении
+        const match = currentExpression.match(/-?[\d\.]+(?!.*[+\-×/])/);
+        if (!match) return;
+
+        const lastNumber = match[0];
+        const lastNumberIndex = currentExpression.lastIndexOf(lastNumber);
+        let newNumber;
+
+        if (lastNumber.startsWith('-')) {
+            newNumber = lastNumber.substring(1);
+        } else {
+            newNumber = '-' + lastNumber;
+        }
+
+        const before = currentExpression.substring(0, lastNumberIndex);
+        const after = currentExpression.substring(lastNumberIndex + lastNumber.length);
+        currentExpression = before + newNumber + after;
+        updateDisplay();
+    }
+
+    // === НАЗНАЧЕНИЕ ОБРАБОТЧИКОВ ===
     digitButtons.forEach(button => {
         button.onclick = () => onDigitButtonClicked(button.innerHTML);
     });
 
-    document.getElementById("btn_op_mult").onclick = () => {
-        if (a === '') return;
-        selectedOperation = 'x';
-    };
-    document.getElementById("btn_op_plus").onclick = () => {
-        if (a === '') return;
-        if (selectedOperation && b !== '') document.getElementById("btn_op_equal").onclick();
-        selectedOperation = '+';
-    };
-    document.getElementById("btn_op_minus").onclick = () => {
-        if (a === '') return;
-        if (selectedOperation && b !== '') document.getElementById("btn_op_equal").onclick();
-        selectedOperation = '-';
-    };
-    document.getElementById("btn_op_div").onclick = () => {
-        if (a === '') return;
-        selectedOperation = '/';
-    };
-    document.getElementById("btn_op_pow10").onclick = () => {
-        if (a === '') return;
-        selectedOperation = '^';
-    };
+    document.getElementById("btn_op_mult").onclick = () => handleOperator('×');
+    document.getElementById("btn_op_plus").onclick = () => handleOperator('+');
+    document.getElementById("btn_op_minus").onclick = () => handleOperator('-');
+    document.getElementById("btn_op_div").onclick = () => handleOperator('/');
+    document.getElementById("btn_op_pow10").onclick = () => handleOperator('^'); // 10^n как бинарная операция
 
-    document.getElementById("btn_op_percent").onclick = () => {
-        if (selectedOperation === null) {
-            if (a !== '') {
-                a = (parseFloat(a) / 100).toString();
-                outputElement.innerHTML = formatDisplay(a);
-            }
-        } else {
-            if (b !== '') {
-                b = (parseFloat(b) / 100).toString();
-                outputElement.innerHTML = formatDisplay(b);
-            }
-        }
-    };
+    document.getElementById("btn_op_equal").onclick = calculateResult;
+    document.getElementById("btn_op_clear").onclick = clearAll;
+    document.getElementById("btn_op_del").onclick = deleteLastChar;
+    document.getElementById("btn_op_sign").onclick = toggleSign;
 
-    document.getElementById("btn_op_del").onclick = () => {
-        if (selectedOperation === null) {
-            if (a.length > 0) {
-                a = a.slice(0, -1);
-                outputElement.innerHTML = a || '0';
-            }
-        } else {
-            if (b.length > 0) {
-                b = b.slice(0, -1);
-                outputElement.innerHTML = b || '0';
-            }
-        }
-    };
+    document.getElementById("btn_op_percent").onclick = () => applyUnaryOperation('percent', '%');
+    document.getElementById("btn_op_sqrt").onclick = () => applyUnaryOperation('sqrt', '√');
+    document.getElementById("btn_op_deg").onclick = () => applyUnaryOperation('square', 'x²');
+    document.getElementById("btn_op_fuck").onclick = () => applyUnaryOperation('factorial', 'x!');
 
-    document.getElementById("btn_op_sqrt").onclick = () => {
-        let number = selectedOperation === null ? a : b;
-        if (number !== '') {
-            const num = parseFloat(number);
-            if (num < 0) {
-                outputElement.innerHTML = 'Ошибка';
-                return;
-            }
-            const result = Math.sqrt(num);
-            if (selectedOperation === null) {
-                a = result.toString();
-                outputElement.innerHTML = formatDisplay(a);
-            } else {
-                b = result.toString();
-                outputElement.innerHTML = formatDisplay(b);
-            }
-            addToHistory(`√(${number})`, formatDisplay(result));
-        }
-    };
-
-    document.getElementById("btn_op_deg").onclick = () => {
-        let number = selectedOperation === null ? a : b;
-        if (number !== '') {
-            const num = parseFloat(number);
-            const result = num * num;
-            if (selectedOperation === null) {
-                a = result.toString();
-                outputElement.innerHTML = formatDisplay(a);
-            } else {
-                b = result.toString();
-                outputElement.innerHTML = formatDisplay(b);
-            }
-            addToHistory(`${number}²`, formatDisplay(result));
-        }
-    };
-
-    document.getElementById("btn_op_clear").onclick = () => {
-        a = '';
-        b = '';
-        selectedOperation = null;
-        outputElement.innerHTML = '0';
-    };
-
-    document.getElementById("btn_op_sign").onclick = () => {
-        if (selectedOperation === null) {
-            if (a !== '') {
-                a = (parseFloat(a) * -1).toString();
-                outputElement.innerHTML = formatDisplay(a);
-            }
-        } else {
-            if (b !== '') {
-                b = (parseFloat(b) * -1).toString();
-                outputElement.innerHTML = formatDisplay(b);
-            }
-        }
-    };
-
-    document.getElementById("btn_op_fuck").onclick = () => {
-        let number = selectedOperation === null ? a : b;
-        if (number !== '') {
-            const num = parseFloat(number);
-            if (num < 0 || !Number.isInteger(num)) {
-                outputElement.innerHTML = 'Ошибка';
-                return;
-            }
-            let result = 1;
-            for (let i = 2; i <= num; i++) result *= i;
-            if (selectedOperation === null) {
-                a = result.toString();
-                outputElement.innerHTML = formatDisplay(a);
-            } else {
-                b = result.toString();
-                outputElement.innerHTML = formatDisplay(b);
-            }
-            addToHistory(`${number}!`, formatDisplay(result));
-        }
-    };
-
-    document.getElementById("btn_op_equal").onclick = () => {
-        if (a === '' || b === '' || selectedOperation === null) return;
-        const num1 = parseFloat(a);
-        const num2 = parseFloat(b);
-        let result;
-        let expressionStr = `${num1} `;
-        switch(selectedOperation) {
-            case 'x':
-                result = num1 * num2;
-                expressionStr += `× ${num2}`;
-                break;
-            case '+':
-                result = num1 + num2;
-                expressionStr += `+ ${num2}`;
-                break;
-            case '-':
-                result = num1 - num2;
-                expressionStr += `- ${num2}`;
-                break;
-            case '/':
-                if (num2 === 0) {
-                    outputElement.innerHTML = 'Ошибка';
-                    return;
-                }
-                result = num1 / num2;
-                expressionStr += `/ ${num2}`;
-                break;
-            case '^':
-                result = num1 * Math.pow(10, num2);
-                expressionStr += `× 10^${num2}`;
-                break;
-            default: return;
-        }
-        a = result.toString();
-        b = '';
-        selectedOperation = null;
-        outputElement.innerHTML = formatDisplay(a);
-        addToHistory(expressionStr, formatDisplay(result));
-    };
-
+    // Обработка клавиатуры
     document.addEventListener('keydown', (event) => {
         const key = event.key;
         if (key >= '0' && key <= '9') {
@@ -271,37 +275,34 @@ window.onload = function() {
             onDigitButtonClicked('.');
         } else if (key === '+') {
             event.preventDefault();
-            document.getElementById("btn_op_plus").onclick();
+            handleOperator('+');
         } else if (key === '-') {
             event.preventDefault();
-            document.getElementById("btn_op_minus").onclick();
+            handleOperator('-');
         } else if (key === '*') {
             event.preventDefault();
-            document.getElementById("btn_op_mult").onclick();
+            handleOperator('×');
         } else if (key === '/') {
             event.preventDefault();
-            document.getElementById("btn_op_div").onclick();
+            handleOperator('/');
         } else if (key === 'Enter' || key === '=') {
             event.preventDefault();
-            document.getElementById("btn_op_equal").onclick();
+            calculateResult();
         } else if (key === 'Escape' || key === 'c' || key === 'C') {
             event.preventDefault();
-            document.getElementById("btn_op_clear").onclick();
+            clearAll();
         } else if (key === 'Backspace') {
             event.preventDefault();
-            document.getElementById("btn_op_del").onclick();
+            deleteLastChar();
         } else if (key === 'r' || key === 'R') {
             event.preventDefault();
-            document.getElementById("btn_op_sqrt").onclick();
+            applyUnaryOperation('sqrt', '√');
         } else if (key === 's' || key === 'S') {
             event.preventDefault();
-            document.getElementById("btn_op_deg").onclick();
+            applyUnaryOperation('square', 'x²');
         } else if (key === '!') {
             event.preventDefault();
-            document.getElementById("btn_op_fuck").onclick();
-        } else if (key === 'e' || key === 'E') {
-            event.preventDefault();
-            document.getElementById("btn_op_pow10").onclick();
+            applyUnaryOperation('factorial', 'x!');
         }
     });
 
@@ -334,27 +335,29 @@ window.onload = function() {
         const historyListEl = document.getElementById('historyList');
         const toggleBtn = document.querySelector('.history-toggle-btn');
 
-        historyListEl.classList.add('collapsed');
-        toggleBtn.textContent = '▼';
+        if (historyListEl) {
+            historyListEl.classList.add('collapsed');
+            toggleBtn.textContent = '▼';
 
-        historyToggle.onclick = () => {
-            collapsed = !collapsed;
-            if (collapsed) {
-                historyListEl.classList.add('collapsed');
-                toggleBtn.textContent = '▼';
-                const allItems = historyListEl.querySelectorAll('.history-item');
-                allItems.forEach((item, index) => {
-                    if (index !== 0) item.style.display = 'none';
-                    else item.style.display = 'block';
-                });
-            } else {
-                historyListEl.classList.remove('collapsed');
-                toggleBtn.textContent = '▲';
-                const allItems = historyListEl.querySelectorAll('.history-item');
-                allItems.forEach(item => {
-                    item.style.display = 'block';
-                });
-            }
-        };
+            historyToggle.onclick = () => {
+                collapsed = !collapsed;
+                if (collapsed) {
+                    historyListEl.classList.add('collapsed');
+                    toggleBtn.textContent = '▼';
+                    const allItems = historyListEl.querySelectorAll('.history-item');
+                    allItems.forEach((item, index) => {
+                        if (index !== 0) item.style.display = 'none';
+                        else item.style.display = 'block';
+                    });
+                } else {
+                    historyListEl.classList.remove('collapsed');
+                    toggleBtn.textContent = '▲';
+                    const allItems = historyListEl.querySelectorAll('.history-item');
+                    allItems.forEach(item => {
+                        item.style.display = 'block';
+                    });
+                }
+            };
+        }
     }
 };
