@@ -4,9 +4,10 @@ import { MainPage } from "../main/index.js";
 import { ModalComponent } from "../../components/modal/index.js";
 
 export class DinosaurPage {
-    constructor(parent, id) {
+    constructor(parent, id, dinosaursData) {
         this.parent = parent;
         this.id = parseInt(id);
+        this.dinosaursData = dinosaursData;
         this.modal = new ModalComponent();
     }
 
@@ -39,8 +40,11 @@ export class DinosaurPage {
     }
 
     getData() {
-        const allDinosaurs = new MainPage().getData();
-        return allDinosaurs.find(dino => dino.id === this.id);
+        if (!this.dinosaursData) {
+            console.error('Нет данных');
+            return null;
+        }
+        return this.dinosaursData.find(dino => dino.id === this.id);
     }
 
     initTheme() {
@@ -85,6 +89,7 @@ export class DinosaurPage {
         }
 
         const container = document.querySelector('.dinosaur-page-container');
+        if (!container) return;
 
         const backButton = new BackButtonComponent(container);
         backButton.render(() => {
@@ -96,7 +101,11 @@ export class DinosaurPage {
         if (data) {
             const dinosaurInfo = new DinosaurInfoComponent(container);
             dinosaurInfo.render(data, (fact) => {
-                this.modal.show(fact);
+                if (this.modal && this.modal.show) {
+                    this.modal.show(fact);
+                } else {
+                    alert(fact);
+                }
             });
         } else {
             container.insertAdjacentHTML('beforeend', '<div class="alert alert-danger">Динозавр не найден!</div>');

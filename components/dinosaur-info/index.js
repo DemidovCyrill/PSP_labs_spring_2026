@@ -189,7 +189,6 @@ export class DinosaurInfoComponent {
         };
         document.addEventListener('keydown', this.handleFullscreenKeydown);
 
-        // Закрытие по клику на фон
         fullscreenDiv.onclick = (e) => {
             if (e.target === fullscreenDiv) {
                 this.closeFullscreen();

@@ -6,10 +6,7 @@ export class MainPage {
     constructor(parent) {
         this.parent = parent;
         this.viewer = null;
-    }
-
-    get pageRoot() {
-        return document.getElementById('main-page');
+        this.dinosaursData = [];
     }
 
     getHTML() {
@@ -46,378 +43,75 @@ export class MainPage {
         `;
     }
 
-    getData() {
-        return [
-            {
-                id: 1,
-                title: "Тираннозавр Рекс",
-                period: "Поздний мел (68-66 млн лет)",
-                short_description: "Один из самых крупных хищных динозавров.",
-                diet: "Хищник",
-                length: "12,3 метра",
-                weight: "до 8 тонн",
-                description: "Тираннозавр был одним из самых крупных наземных хищников за всю историю Земли. Обладал мощнейшим укусом и маленькими, но сильными передними лапами.",
-                funFact: "Зубы тираннозавра могли достигать 30 см в длину, включая корень!",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/b/bf/Tyrannosaurus-rex-Profile-steveoc86_%28flipped%29.png",
-                    "https://upload.wikimedia.org/wikipedia/commons/9/94/Tyrannosaurus_Rex_Holotype.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/e/e4/Tyrannoskull.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/4/4d/MUJA-Tyrannosaurus.JPG"]
-            },
-            {
-                id: 2,
-                title: "Трицератопс",
-                period: "Поздний мел (68-66 млн лет)",
-                short_description: "Травоядный динозавр с тремя рогами.",
-                diet: "Травоядный",
-                length: "9 метров",
-                weight: "6-12 тонн",
-                description: "Трицератопс известен своим большим костяным воротником и тремя рогами на морде. Использовал их для защиты от хищников.",
-                funFact: "Несмотря на грозный вид, трицератопсы были травоядными и паслись стадами, как современные бизоны.",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/0/08/Triceratops_horridus.png",
-                    "https://upload.wikimedia.org/wikipedia/commons/e/ec/LA-Triceratops_mount-2.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/0/0d/Triceratops2.png",
-                    "https://upload.wikimedia.org/wikipedia/commons/6/6b/Triceratops_AMNH_01.jpg"
-                ]
-            },
-            {
-                id: 3,
-                title: "Стегозавр",
-                period: "Поздняя юра (155-145 млн лет)",
-                short_description: "Динозавр с костяными пластинами на спине.",
-                diet: "Травоядный",
-                length: "9 метров",
-                weight: "до 5 тонн",
-                description: "Стегозавра легко узнать по характерным ромбовидным пластинам вдоль спины и шипам на хвосте.",
-                funFact: "Пластины стегозавра использовались для регулирования температуры тела и привлечения партнеров.",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/5/5f/Stegosaurus_stenops_Life_Reconstruction_%28flipped%29.png",
-                    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Stegosaurus_ungulatus.jpg/1280px-Stegosaurus_ungulatus.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/a/af/Stegosaurus_Heinrich_Harder.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Stegosaurus_stenops_skull_cast_-_Natural_History_Museum_of_Utah_-_DSC07228.JPG/1920px-Stegosaurus_stenops_skull_cast_-_Natural_History_Museum_of_Utah_-_DSC07228.JPG"
-                ]
-            },
-            {
-                id: 4,
-                title: "Спинозавр",
-                period: "Поздний мел (112-93 млн лет)",
-                short_description: "Крупнейший хищный динозавр с парусом на спине.",
-                diet: "Хищник (рыба)",
-                length: "15 метров",
-                weight: "до 7 тонн",
-                description: "Спинозавр известен своим длинным крокодилоподобным черепом и высоким парусом на спине. Вероятно, вёл полуводный образ жизни.",
-                funFact: "Спинозавр — самый крупный из известных хищных динозавров, превосходивший по размеру даже тираннозавра.",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/1/10/Spinosaurus_mirabilis.png",
-                    "https://upload.wikimedia.org/wikipedia/commons/f/f0/FSAC-KK-11888.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/6/6f/Spinosaurus_Model_%282%29.png"
-                ]
-            },
-            {
-                id: 5,
-                title: "Велоцираптор",
-                period: "Поздний мел (75-71 млн лет)",
-                short_description: "Небольшой, но очень ловкий хищник.",
-                diet: "Хищник",
-                length: "2 метра",
-                weight: "15-20 кг",
-                description: "Велоцирапторы охотились стаями и использовали большой изогнутый коготь на задней лапе для атаки.",
-                funFact: "В отличие от фильма «Парк юрского периода», велоцирапторы были покрыты перьями.",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/5/55/Velociraptor_Restoration.png",
-                    "https://upload.wikimedia.org/wikipedia/commons/3/3d/Velociraptor_skeleton_white_background.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/7/7d/Velociraptor_specimen_IGM.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/c/cd/Velociraptor_dinoguy2.jpg"
-                ]
-            },
-            {
-                id: 6,
-                title: "Брахиозавр",
-                period: "Поздняя юра (154-153 млн лет)",
-                short_description: "Гигантский длинношеий динозавр.",
-                diet: "Травоядный",
-                length: "25 метров",
-                weight: "30-40 тонн",
-                description: "Брахиозавр отличался очень длинной шеей и передними ногами, которые были длиннее задних.",
-                funFact: "Шея брахиозавра могла достигать 9 метров в длину.",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/d/d6/Brontosaurus_skeleton_1880s.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/c/cf/Brachiosaurus_NT_new.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/7/74/Museum_für_Naturkunde_%2836556352434%29.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/8/8c/Brachiosaurus_composite_Matthew_1915.jpg"
-                ]
-            },
-            {
-                id: 7,
-                title: "Анкилозавр",
-                period: "Поздний мел (68-66 млн лет)",
-                short_description: "Бронированный динозавр с булавой на хвосте.",
-                diet: "Травоядный",
-                length: "8-9 метров",
-                weight: "4-6 тонн",
-                description: "Тело анкилозавра было покрыто толстыми костными пластинами, а на конце хвоста находилась тяжёлая костяная булава.",
-                funFact: "Булава на хвосте анкилозавра могла сломать ногу крупному хищнику.",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/c/c4/Ankylosaurus_magniventris_by_sphenaphinae.png",
-                    "https://upload.wikimedia.org/wikipedia/commons/f/f0/Ankylosaur_head_-_cast_-_Custer_County_Montana_-_Museum_of_the_Rockies_-_2013-07-08.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/d/dd/Ankylosaurus.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/7/77/Ankylosaurus_dinosaur.png"
-                ]
-            },
-            {
-                id: 8,
-                title: "Паразауролоф",
-                period: "Поздний мел (76-73 млн лет)",
-                short_description: "Динозавр с трубчатым гребнем на голове.",
-                diet: "Травоядный",
-                length: "9-10 метров",
-                weight: "2,5-3 тонны",
-                description: "Гребень паразауролофа служил для издавания низких звуков для общения внутри стада.",
-                funFact: "Гребень работал как музыкальный инструмент — динозавр мог издавать гудящие звуки.",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/f/f4/Life_reconstruction_of_Parasaurolophus_walkeri.png",
-                    "https://upload.wikimedia.org/wikipedia/commons/f/f2/FMNH_Parasaurolophus_fossil.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/a/a6/ParasaurCMNBeak.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/2/2a/GorgosaurusDB.jpg"
-                ]
-            },
-            {
-                id: 9,
-                title: "Диплодок",
-                period: "Поздняя юра (154-152 млн лет)",
-                short_description: "Длинношеий и длиннохвостый зауропод.",
-                diet: "Травоядный",
-                length: "27-35 метров",
-                weight: "10-16 тонн",
-                description: "Диплодок обладал одной из самых длинных шей и хлыстообразным хвостом для защиты.",
-                funFact: "Хвост диплодока мог двигаться со сверхзвуковой скоростью, создавая эффект кнута.",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/0/08/Diplodocus_carnegii.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/c/cf/Diplodocus_%28replica%29.001_-_London.JPG",
-                    "https://upload.wikimedia.org/wikipedia/commons/5/5f/Diplodocus_size_comparison.png",
-                    "https://upload.wikimedia.org/wikipedia/commons/8/88/DiplodocusSkeleton.jpg"
-                ]
-            },
-            {
-                id: 10,
-                title: "Мозазавр",
-                period: "Поздний мел (70-66 млн лет)",
-                short_description: "Гигантский морской хищник-рептилия.",
-                diet: "Хищник",
-                length: "до 18 метров",
-                weight: "до 20 тонн",
-                description: "Мозазавр был доминирующим хищником морей позднего мелового периода. Он имел мощные челюсти с двойным рядом зубов и ластоподобные конечности.",
-                funFact: "Мозазавры — не динозавры, а морские рептилии, ближайшие родственники современных варанов!",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/1/14/Mosasaurus_beaugei1DB.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/a/a9/Mosasaurus_hoffmannii_-_skeleton.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/d/d0/Mosasaurus_hoffmanni_life.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/0/03/Mosasaurus_21copy.jpg"
-                ]
-            },
-            {
-                id: 11,
-                title: "Плиозавр",
-                period: "Поздняя юра (160-150 млн лет)",
-                short_description: "Короткошеий морской хищник с огромной головой.",
-                diet: "Хищник",
-                length: "10-15 метров",
-                weight: "до 10 тонн",
-                description: "Плиозавры имели массивную голову, короткую шею и мощные ласты. Они были одними из самых опасных морских хищников своего времени.",
-                funFact: "Плиозавры могли развивать скорость до 30 км/ч в воде благодаря своим мощным ластам.",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/e/e8/Pliosaurus_funkei21DB_2.jpg" ,
-                    "https://upload.wikimedia.org/wikipedia/commons/0/09/Monster_of_Aramberri.jpg"
-                ]
-            },
-            {
-                id: 12,
-                title: "Эласмозавр",
-                period: "Поздний мел (80-65 млн лет)",
-                short_description: "Плезиозавр с невероятно длинной шеей.",
-                diet: "Хищник (рыба, моллюски)",
-                length: "10-14 метров",
-                weight: "до 3 тонн",
-                description: "Шея эласмозавра составляла больше половины длины тела — до 7 метров! Он использовал её как змею, чтобы ловить рыбу.",
-                funFact: "У эласмозавра было 71 позвонок в шее — больше, чем у любого другого животного в истории!",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/2/2f/Elasmosaurus_platyurus.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/5/56/Elasomosaurus_Face_Clean.png"
-                ]
-            },
-            {
-                id: 13,
-                title: "Лиоплевродон",
-                period: "Средняя юра (165-155 млн лет)",
-                short_description: "Гигантский плиозавр с мощными челюстями.",
-                diet: "Хищник",
-                length: "7-10 метров",
-                weight: "до 5 тонн",
-                description: "Лиоплевродон имел огромные челюсти с зубами длиной до 30 см. Он питался крупными морскими рептилиями и акулами.",
-                funFact: "Лиоплевродон мог нырять на глубину до 500 метров и оставаться под водой до часа.",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/5/5c/Liopleurodon_ferox_Tubingen_2.JPG",
-                    "https://upload.wikimedia.org/wikipedia/commons/7/7f/Leedsi%26Liopl_DB.jpg"
-                ]
-            },
-            {
-                id: 14,
-                title: "Дунклеостей",
-                period: "Поздний девон (380-360 млн лет)",
-                short_description: "Бронированная рыба-хищник с мощными пластинами.",
-                diet: "Хищник",
-                length: "до 10 метров",
-                weight: "до 4 тонн",
-                description: "Вместо зубов у дунклеостея были острые костяные пластины, которые действовали как гильотина. Это одна из первых сверххищников в истории Земли.",
-                funFact: "Укус дунклеостея был одним из самых мощных в истории — около 5000 кг на квадратный сантиметр!",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/9/9f/D_Terrelli.png",
-                    "https://upload.wikimedia.org/wikipedia/commons/d/d3/Dunkleosteus_skull_QM_email.jpg"
-                ]
-            },
-            {
-                id: 15,
-                title: "Опабиния",
-                period: "Средний кембрий (505 млн лет)",
-                short_description: "Странное членистоногое с пятью глазами.",
-                diet: "Хищник (мелкая живность)",
-                length: "4-7 см",
-                weight: "несколько грамм",
-                description: "Опабиния — одно из самых странных существ кембрийского взрыва. У неё было пять глаз на стебельках и хоботок с клешней на конце.",
-                funFact: "Опабиния — живое доказательство того, что в кембрии эволюция экспериментировала с формами жизни!",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/f/fb/USNM_PAL_57683_Opabinia_regalis_Image_3.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/2/21/20191108_Opabinia_regalis.png"
-                ]
-            },
-            {
-                id: 16,
-                title: "Игуанодон",
-                period: "Ранний мел (126-125 млн лет)",
-                short_description: "Один из первых открытых динозавров.",
-                diet: "Травоядный",
-                length: "10 метров",
-                weight: "3-5 тонн",
-                description: "Игуанодон имел характерный шип на большом пальце, который служил для защиты от хищников.",
-                funFact: "Игуанодон стал одним из первых динозавров, описанных учёными в XIX веке.",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/2/2b/Iguanodon_NT.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/7/70/Iguanodon_de_Bernissart_IRSNB_01.JPG",
-                    "https://upload.wikimedia.org/wikipedia/commons/f/ff/Iguanodon_Skelett_2.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/5/50/Iguanodon_bernissartensis.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/e/e9/Delapparentia_by_durbed.jpg"
-                ]
-            },
-            {
-                id: 17,
-                title: "Пахицефалозавр",
-                period: "Поздний мел (70-66 млн лет)",
-                short_description: "Динозавр с утолщённым черепом.",
-                diet: "Травоядный",
-                length: "4,5-6 метров",
-                weight: "450 кг",
-                description: "Череп пахицефалозавра имел куполообразную форму толщиной до 25 см для внутривидовых боёв.",
-                funFact: "Самцы пахицефалозавров бились головами, как современные бараны!",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/b/bc/Pachycephalosaurus_Reconstruction.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/c/c1/Pachycephalosaurus_wyomingensis_ROM.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/f/fb/The_Childrens_Museum_of_Indianapolis_-_Dracorex_actual_skull.jpg"
-                ]
-            },
-            {
-                id: 18,
-                title: "Дейноних",
-                period: "Ранний мел (115-108 млн лет)",
-                short_description: "Активный хищник с серповидным когтем.",
-                diet: "Хищник",
-                length: "3,4 метра",
-                weight: "70-100 кг",
-                description: "Дейноних был быстрым охотником с огромным изогнутым когтем на втором пальце задней лапы.",
-                funFact: "Дейноних считается одним из самых умных динозавров благодаря большому мозгу.",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/1/1e/Deinonychus_Restoration.png",
-                    "https://upload.wikimedia.org/wikipedia/commons/9/98/Deinonychus_FMNH.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/d/da/Deinonychus_patte_arrière_gauche.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/1/12/Deinonychus-scale-ru.png"
-                ]
-            },
-            {
-                id: 19,
-                title: "Карнотавр",
-                period: "Поздний мел (72-69 млн лет)",
-                short_description: "Хищник с двумя рогами на голове.",
-                diet: "Хищник",
-                length: "7-8 метров",
-                weight: "2-3 тонны",
-                description: "Карнотавр был быстрым бегуном с короткой мордой и двумя рогами над глазами.",
-                funFact: "Карнотавр — единственный хищный динозавр с рогами, похожими на коровьи!",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/8/81/Carnotaurus_Reconstruction_%282022%29.png",
-                    "https://upload.wikimedia.org/wikipedia/commons/c/cc/Carnotaurus%2C_Chlupáč_Museum%2C_Prague-2.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/7/72/Carnotaurus_Size_Chart.png"
-                ]
-            },
-            {
-                id: 20,
-                title: "Протоцератопс",
-                period: "Поздний мел (75-70 млн лет)",
-                short_description: "Маленький предок трицератопса.",
-                diet: "Травоядный",
-                length: "1,8-2,5 метра",
-                weight: "180-400 кг",
-                description: "Протоцератопс имел небольшой костяной воротник на шее, но у него не было рогов, как у трицератопса.",
-                funFact: "Окаменелости протоцератопса часто находят в «драке» с велоцирапторами — застывшими в битве!",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/8/84/Protoceratops_andrewsi_Restoration.png",
-                    "https://upload.wikimedia.org/wikipedia/commons/b/b2/Protoceratops_diversity.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/e/e4/Velociraptor_v._Protoceratops_%28fixed%29.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/f/f5/Fighting_dinosaurs_%282%29.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/6/69/Amnh_protoceratops_hatchling1.JPG",
-                    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Protoceratops_size.png/1920px-Protoceratops_size.png"
-                ]
-            },
-            {
-                id: 21,
-                title: "Кетцалькоатль",
-                period: "Поздний мел (68-66 млн лет)",
-                short_description: "Крупнейшее летающее животное в истории.",
-                diet: "Хищник (падальщик?)",
-                length: "размах крыльев до 12 метров",
-                weight: "200-250 кг",
-                description: "Кетцалькоатль был птерозавром размером с небольшой самолёт. Он мог парить над землёй в поисках добычи.",
-                funFact: "Кетцалькоатль был размером с жирафа на земле — его шея достигала 3 метров!",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/6/6b/Life_restoration_of_a_group_of_giant_azhdarchids%2C_Quetzalcoatlus_northropi%2C_foraging_on_a_Cretaceous_fern_prairie.png",
-                    "https://upload.wikimedia.org/wikipedia/commons/6/60/Gfp-quetzalcaotlus.jpg"
-                ]
-            },
-            {
-                id: 22,
-                title: "Теризинозавр",
-                period: "Поздний мел (70-68 млн лет)",
-                short_description: "Травоядный динозавр с огромными когтями.",
-                diet: "Травоядный",
-                length: "9-10 метров",
-                weight: "3-5 тонн",
-                description: "У теризинозавра были когти длиной до 1 метра! Несмотря на свой страшный вид, он был мирным травоядным.",
-                funFact: "Теризинозавр — главный пример того, что внешность обманчива: огромные когти нужны были для срывания листьев!",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/9/9c/Therizinosaurus_Restoration.png"]
-            },
-            {
-                id: 23,
-                title: "Галлимим",
-                period: "Поздний мел (70-66 млн лет)",
-                short_description: "Страусоподобный динозавр-бегун.",
-                diet: "Всеядный",
-                length: "6-8 метров",
-                weight: "440 кг",
-                description: "Галлимим был одним из самых быстрых динозавров — он мог развивать скорость до 70 км/ч.",
-                funFact: "Галлимим означает «имитирующий курицу» — из-за сходства его скелета со скелетом страуса.",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/e/e5/Gallimimus_Restoration.png",
-                    "https://upload.wikimedia.org/wikipedia/commons/f/f0/Gallimimus_1_NHM3.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Gallimimus_Size_Comparison_by_PaleoGeek.svg/langru-1920px-Gallimimus_Size_Comparison_by_PaleoGeek.svg.png"
-                ]
-            },
-            {
-                id: 24,
-                title: "Компсогнат",
-                period: "Поздняя юра (150 млн лет)",
-                short_description: "Один из самых маленьких динозавров.",
-                diet: "Хищник (насекомые, ящерицы)",
-                length: "1 метр",
-                weight: "2-3 кг",
-                description: "Компсогнат был размером с курицу и охотился на мелкую живность. Это один из самых маленьких нелетающих динозавров.",
-                funFact: "Компсогнат долгое время считался самым маленьким динозавром, пока не нашли ещё более мелких!",
-                images: ["https://upload.wikimedia.org/wikipedia/commons/c/c4/Compsognathus_BW.jpg",
-                    "https://upload.wikimedia.org/wikipedia/commons/e/e8/Compysizes1.png"
-                ]
+    async loadData() {
+        const jsonUrl = new URL('../../src/data/dinosaurs.json', import.meta.url).href;
+        console.log('🔍 Загружаем JSON по пути:', jsonUrl);
+
+        try {
+            const response = await fetch(jsonUrl);
+            if (response.ok) {
+                const data = await response.json();
+                console.log('✅ JSON загружен! Количество динозавров:', data.length);
+                this.dinosaursData = data;
+                return data;
+            } else {
+                throw new Error(`HTTP ${response.status}`);
             }
-        ];
+        } catch (error) {
+            console.error('❌ Ошибка загрузки JSON:', error);
+
+            // Если JSON не загрузился, используем данные из вашего исходного файла
+            console.log('📝 Используем встроенные данные');
+            this.dinosaursData = [
+                {
+                    "id": 1,
+                    "title": "Резервный Рекс",
+                    "period": "Поздний мел (68-66 млн лет)",
+                    "short_description": "Один из самых крупных хищных динозавров.",
+                    "diet": "Хищник",
+                    "length": "12,3 метра",
+                    "weight": "до 8 тонн",
+                    "description": "Тираннозавр был одним из самых крупных наземных хищников за всю историю Земли.",
+                    "funFact": "Зубы тираннозавра могли достигать 30 см в длину!",
+                    "images": ["https://upload.wikimedia.org/wikipedia/commons/b/bf/Tyrannosaurus-rex-Profile-steveoc86_%28flipped%29.png"]
+                },
+                {
+                    "id": 2,
+                    "title": "РезервныйТрицератопс",
+                    "period": "Поздний мел (68-66 млн лет)",
+                    "short_description": "Травоядный динозавр с тремя рогами.",
+                    "diet": "Травоядный",
+                    "length": "9 метров",
+                    "weight": "6-12 тонн",
+                    "description": "Трицератопс известен своим большим костяным воротником.",
+                    "funFact": "Трицератопсы паслись стадами, как современные бизоны.",
+                    "images": ["https://upload.wikimedia.org/wikipedia/commons/0/08/Triceratops_horridus.png"]
+                },
+                {
+                    "id": 3,
+                    "title": "Стегозавр",
+                    "period": "Поздняя юра (155-145 млн лет)",
+                    "short_description": "Динозавр с костяными пластинами на спине.",
+                    "diet": "Травоядный",
+                    "length": "9 метров",
+                    "weight": "до 5 тонн",
+                    "description": "Стегозавра легко узнать по характерным ромбовидным пластинам.",
+                    "funFact": "Пластины стегозавра использовались для регулирования температуры тела.",
+                    "images": ["https://upload.wikimedia.org/wikipedia/commons/5/5f/Stegosaurus_stenops_Life_Reconstruction_%28flipped%29.png"]
+                }
+            ];
+            return this.dinosaursData;
+        }
     }
 
     clickCard(dinosaurId) {
-        const dinosaurPage = new DinosaurPage(this.parent, dinosaurId);
-        dinosaurPage.render();
+        console.log('Клик по карточке:', dinosaurId);
+        if (this.dinosaursData && this.dinosaursData.length > 0) {
+            const dinosaurPage = new DinosaurPage(this.parent, dinosaurId, this.dinosaursData);
+            dinosaurPage.render();
+        } else {
+            console.error('Данные не загружены');
+        }
     }
 
     initTheme() {
@@ -429,74 +123,63 @@ export class MainPage {
         } else if (savedTheme === 'light') {
             document.body.classList.remove('dark-theme');
             if (themeToggle) themeToggle.textContent = '🌙';
-        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.body.classList.add('dark-theme');
-            if (themeToggle) themeToggle.textContent = '☀️';
         }
     }
 
     init3DViewer() {
         const container = document.getElementById('modelViewer');
-        if (container) {
-            console.log('Initializing 3D viewer...');
-            const modelPath = './models/dinosaur.glb';
-            this.viewer = new ThreeDViewer(container, modelPath);
-            this.viewer.init();
-        } else {
-            console.error('Container #modelViewer not found!');
+        if (container && !this.viewer) {
+            console.log('Инициализация 3D просмотрщика...');
+            try {
+                this.viewer = new ThreeDViewer(container, './models/dinosaur.glb');
+                this.viewer.init();
+            } catch (error) {
+                console.error('3D ошибка:', error);
+            }
         }
     }
 
-    render() {
+    async render() {
+        console.log('Запуск MainPage');
+
         this.parent.innerHTML = '';
-        const html = this.getHTML();
-        this.parent.insertAdjacentHTML('beforeend', html);
+        this.parent.insertAdjacentHTML('beforeend', this.getHTML());
 
         this.initTheme();
 
         const themeToggle = document.getElementById('globalThemeToggle');
         if (themeToggle) {
-            const newToggle = themeToggle.cloneNode(true);
-            themeToggle.parentNode.replaceChild(newToggle, themeToggle);
-
-            newToggle.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (document.body.classList.contains('dark-theme')) {
-                    document.body.classList.remove('dark-theme');
-                    newToggle.textContent = '🌙';
-                    localStorage.setItem('paleoTheme', 'light');
-                } else {
-                    document.body.classList.add('dark-theme');
-                    newToggle.textContent = '☀️';
-                    localStorage.setItem('paleoTheme', 'dark');
-                }
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-theme');
+                const isDark = document.body.classList.contains('dark-theme');
+                themeToggle.textContent = isDark ? '☀️' : '🌙';
+                localStorage.setItem('paleoTheme', isDark ? 'dark' : 'light');
             });
         }
 
-        // Кнопка перехода на страницу с функциями
         const goToFunctionsBtn = document.getElementById('goToFunctionsBtn');
         if (goToFunctionsBtn) {
-            goToFunctionsBtn.addEventListener('click', () => {
-                import('../functions/index.js').then(module => {
-                    const FunctionsPage = module.FunctionsPage;
-                    const functionsPage = new FunctionsPage(this.parent);
-                    functionsPage.render(this.getData());
-                }).catch(err => {
-                    console.error('Failed to load FunctionsPage:', err);
-                    alert('Ошибка загрузки страницы с функциями. Проверьте консоль.');
-                });
+            goToFunctionsBtn.addEventListener('click', async () => {
+                const module = await import('../functions/index.js');
+                const functionsPage = new module.FunctionsPage(this.parent);
+                functionsPage.render(this.dinosaursData);
             });
         }
 
-        // Инициализация 3D просмотрщика
+        await this.loadData();
+
         this.init3DViewer();
 
         const cardsContainer = document.getElementById('cards-container');
-        const data = this.getData();
-
-        data.forEach(item => {
-            const card = new DinosaurCardComponent(cardsContainer);
-            card.render(item, this.clickCard.bind(this));
-        });
+        if (cardsContainer && this.dinosaursData.length > 0) {
+            cardsContainer.innerHTML = '';
+            this.dinosaursData.forEach(item => {
+                const card = new DinosaurCardComponent(cardsContainer);
+                card.render(item, this.clickCard.bind(this));
+            });
+            console.log(`Отрисовано ${this.dinosaursData.length} карточек`);
+        } else if (cardsContainer) {
+            cardsContainer.innerHTML = '<div style="text-align: center; padding: 40px;">Нет данных</div>';
+        }
     }
 }
