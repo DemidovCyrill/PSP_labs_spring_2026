@@ -41,6 +41,49 @@
 ![Страница "Главное", открывается при запуске приложения](скриншоты/Главная.png)
 Страница "Главное", открывается при запуске приложения
 
+### Базовая структура калькулятора (HTML)
+```html
+<div class="calculator-wrapper">
+    <div id="result" class="result">0</div>
+    <div class="buttons">
+        <div class="button-row">
+            <button class="my-btn secondary">C</button>
+            <button class="my-btn secondary">⌫</button>
+            <button class="my-btn secondary">+/-</button>
+            <button class="my-btn primary">/</button>
+            <button class="my-btn secondary">x!</button>
+        </div>
+        <div class="button-row">
+            <button class="my-btn">7</button>
+            <button class="my-btn">8</button>
+            <button class="my-btn">9</button>
+            <button class="my-btn primary">×</button>
+            <button class="my-btn secondary">%</button>
+        </div>
+        <div class="button-row">
+            <button class="my-btn">4</button>
+            <button class="my-btn">5</button>
+            <button class="my-btn">6</button>
+            <button class="my-btn primary">-</button>
+            <button class="my-btn secondary">√</button>
+        </div>
+        <div class="button-row">
+            <button class="my-btn">1</button>
+            <button class="my-btn">2</button>
+            <button class="my-btn">3</button>
+            <button class="my-btn primary">+</button>
+            <button class="my-btn secondary">x²</button>
+        </div>
+        <div class="button-row">
+            <button class="my-btn">0</button>
+            <button class="my-btn">.</button>
+            <button class="my-btn primary execute">=</button>
+            <button class="my-btn secondary">10ⁿ</button>
+        </div>
+    </div>
+</div>
+```
+
 ![Страница "Инструкция", где описаны все функции и правила использования приложения](скриншоты/Инструкция.png)
 Страница "Инструкция", где описаны все функции и правила использования приложения
 
@@ -49,6 +92,38 @@
 
 ![Тёмная версия страницуы "Калькулятор"](скриншоты/Тёмный_калькулятор.png)
 Тёмная версия страницуы "Калькулятор"
+
+### Тёмная тема (через CSS класс)
+```css
+body.dark-theme {
+    background: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-theme .navbar,
+body.dark-theme .footer,
+body.dark-theme .about-card,
+body.dark-theme .hero-section,
+body.dark-theme .calculator-wrapper {
+    background: #1e1e2e;
+    border-color: #2d2d44;
+}
+
+body.dark-theme .result {
+    background: #0f0f1a;
+    color: #b0e57c;
+    border-color: #2d2d44;
+}
+
+body.dark-theme .my-btn {
+    background: #2d2d44;
+    color: #e0e0e0;
+}
+
+body.dark-theme .my-btn.primary {
+    background: #ff7700;
+}
+```
 
 ## Автор
 Демидов Кирилл Андреевич
