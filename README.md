@@ -12,6 +12,7 @@
 | 2            | `full_calculator`        |
 | 3            | `paleontology-app`       |
 | 4            | `feature/api-integration`|
+| 5            | `feature/ajax-xhr`       |
 
 ДЗ находится в третьей лабораторной работе "paleontology-app"
 
