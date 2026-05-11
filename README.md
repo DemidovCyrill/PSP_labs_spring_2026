@@ -22,11 +22,51 @@
 - **Сетка карточек** — 24 доисторических существа с фотографиями и краткой информацией
 - **Переход на страницу функций** — кнопка "Работа с массивами"
 
+  #### Реализация переключения темы
+Файл: `pages/main/index.js`
+
+```javascript
+initTheme() {
+    const savedTheme = localStorage.getItem('paleoTheme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-theme');
+    }
+}
+
+// Кнопка переключения
+themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-theme');
+    const isDark = document.body.classList.contains('dark-theme');
+    localStorage.setItem('paleoTheme', isDark ? 'dark' : 'light');
+});
+```
+
 ### Страница динозавра
 ![Страница динозавра](скриншоты/Карточка.png)
 - **Галерея изображений** — вертикальный столбец миниатюр слева, основное фото справа
 - **Полноэкранный режим** — клик на фото или кнопку ⛶, навигация стрелками клавиатуры
 - **Интересные факты** — модальное окно с уникальной информацией
+#### Реализация карточек динозавров
+Файл: `components/dinosaur-card/index.js`
+
+```javascript
+export class DinosaurCardComponent {
+    getHTML(data) {
+        const imageUrl = data.images && data.images.length > 0 ? data.images[0] : 'https://via.placeholder.com/300x200?text=No+Image';
+        return `
+            <div class="dino-card" id="dino-card-${data.id}">
+                <img src="${imageUrl}" class="dino-card-image" alt="${data.title}">
+                <div class="dino-card-content">
+                    <h3 class="dino-card-title">${data.title}</h3>
+                    <div class="dino-card-period">${data.period}</div>
+                    <p class="dino-card-description">${data.short_description}</p>
+                    <span class="dino-card-diet">${data.diet}</span>
+                </div>
+            </div>
+        `;
+    }
+}
+```
 
 ### Страница функций (Работа с коллекциями)
 ![Домашнее задание главное](скриншоты/Дз_главная.png)
@@ -52,6 +92,66 @@
 - **Удалить по индексу** — удаление любого элемента
 - **Случайный числовой массив** — генерация 3-7 чисел от 1 до 50
 - **Сброс к исходному** — восстановление массива динозавров
+
+#### Реализация функций
+Файл: `pages/functions/index.js`
+
+```javascript
+// 1.1 concatenate
+concatenate(arr, separator) {
+    return arr.join(separator);
+}
+
+// 1.2 countIdentic
+countIdentic(arr) {
+    const counts = {};
+    arr.forEach(item => { counts[item] = (counts[item] || 0) + 1; });
+    let duplicates = 0;
+    for (let key in counts) if (counts[key] > 1) duplicates++;
+    return duplicates;
+}
+
+// 1.3 sumOfSquares
+sumOfSquares(arr) {
+    const numbers = arr.filter(item => !isNaN(parseFloat(item)) && isFinite(item)).map(Number);
+    return numbers.reduce((sum, num) => sum + num * num, 0);
+}
+
+// 1.4 getSumAndMultOfArray
+getSumAndMultOfArray(arr) {
+    const numbers = arr.filter(item => !isNaN(parseFloat(item)) && isFinite(item)).map(Number);
+    const sum = numbers.reduce((s, n) => s + n, 0);
+    const mult = numbers.reduce((m, n) => m * n, 1);
+    return { sum, mult };
+}
+
+// 1.5 moveElement
+moveElement(arr, from, to) {
+    const result = [...arr];
+    const element = result[from];
+    result.splice(from, 1);
+    result.splice(to, 0, element);
+    return result;
+}
+
+// 1.9 fill
+fill(arraySize, data) {
+    return new Array(arraySize).fill(data);
+}
+
+// 1.10 erase
+erase(arr) {
+    return arr.filter(item => 
+        item !== false && item !== undefined && 
+        item !== null && item !== 0 && item !== ''
+    );
+}
+
+// 2.4 diff
+diff(arr1, arr2) {
+    return arr1.filter(item => !arr2.includes(item));
+}
+```
 
 ## Технологии
 
@@ -81,6 +181,31 @@
 - **Приближение/отдаление** — колесико мыши
 - **Автовращение** — включено по умолчанию
 
+#### Реализация 3D-просмотрщика
+Файл: `components/3d-viewer/index.js`
+
+```javascript
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+export class ThreeDViewer {
+    init() {
+        this.scene = new THREE.Scene();
+        this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+        this.renderer = new THREE.WebGLRenderer({ antialias: true });
+        
+        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.autoRotate = true;
+        this.controls.autoRotateSpeed = 1.5;
+        
+        this.addLights();
+        this.loadModel();
+        this.animate();
+    }
+}
+```
+
 ### Галерея на странице динозавра
 ![Фото_карточки](скриншоты/Фото_карточки.png)
 ![Фото_карточки](скриншоты/Карточка_полноэкранный_перелистанный.png)
@@ -91,6 +216,40 @@
 - **Стрелки навигации** — появляются при наведении на фото
 - **Полноэкранный режим** — клик на фото или кнопку ⛶
 - **Клавиши в полноэкранном режиме** — ← → для переключения, ESC для выхода
+
+#### Реализация галереи
+Файл: `components/dinosaur-info/index.js`
+
+```javascript
+export class DinosaurInfoComponent {
+    getHTML(data) {
+        return `
+            <div class="thumbnail-column-wrapper">
+                <div class="thumbnail-column" id="thumbnailColumn">
+                    ${this.getThumbnailsHTML(data.images)}
+                </div>
+            </div>
+            <div class="main-image-container">
+                <div class="main-image-wrapper">
+                    <img src="${data.images[0]}" class="main-gallery-image" id="mainGalleryImage">
+                    <button class="gallery-nav prev" id="prevImageBtn">❮</button>
+                    <button class="gallery-nav next" id="nextImageBtn">❯</button>
+                    <button class="fullscreen-btn" id="fullscreenBtn">⛶</button>
+                </div>
+            </div>
+        `;
+    }
+    
+    openFullscreen() {
+        // Полноэкранный режим с навигацией по стрелкам
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') this.prevImage();
+            if (e.key === 'ArrowRight') this.nextImage();
+            if (e.key === 'Escape') this.closeFullscreen();
+        });
+    }
+}
+```
 
 ### Страница функций
 ![Фото_карточки](скриншоты/Дз_по_умолчанию.png)
